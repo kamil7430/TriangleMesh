@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using TriangleMesh.ViewModels;
+using TriangleMesh.Views.Helpers;
 
 namespace TriangleMesh.Views;
 
@@ -30,6 +31,12 @@ public class MainWindowRenderer
 
     private unsafe void RenderBezierPolygon(uint* ptr)
     {
+        if (_viewModel.BezierPolygon == null)
+            return;
+
+        _viewModel.BezierPolygon.ControlPoints
+        var pixels = LineDrawer.GetPixelsToPaint()
+
         uint greenColor = 0xFF00FF00;
 
         for (int y = 0; y < _height; y++)
