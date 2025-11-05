@@ -19,14 +19,18 @@ public partial class MainWindow : Window, IMessageBoxShower
     {
         InitializeComponent();
         DataContext = _viewModel = new MainWindowViewModel(this);
+        Loaded += MainWindow_OnLoaded;
 
         _drawingAreaBuffer = new WriteableBitmap(DRAWING_AREA_SIZE, DPI_VECTOR);
         DrawingArea.Source = _drawingAreaBuffer;
-        _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
+        _viewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         RenderDrawingArea();
     }
 
-    private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void MainWindow_OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        => _viewModel.LoadBezierPolygon("BezierPoints.txt");
+
+    private void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         => RenderDrawingArea();
 
     private unsafe void RenderDrawingArea()

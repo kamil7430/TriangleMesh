@@ -12,10 +12,9 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(IMessageBoxShower messageBoxShower)
     {
         _messageBoxShower = messageBoxShower;
-        _bezierPolygon = LoadBezierPolygon("BezierPoints.txt");
     }
 
-    private BezierPolygon? LoadBezierPolygon(string path)
+    public BezierPolygon? LoadBezierPolygon(string path)
     {
         try
         {
@@ -25,7 +24,8 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         catch (Exception e)
         {
-            _messageBoxShower.ShowMessageBox("Error", e.Message);
+            _messageBoxShower.ShowMessageBox("B³¹d",
+                $"Podczas ³adowania punktów w wielok¹cie Beziera wyst¹pi³ b³¹d:\n{e.Message}");
         }
         return null;
     }
