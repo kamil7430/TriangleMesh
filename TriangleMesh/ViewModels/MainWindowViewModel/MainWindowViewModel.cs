@@ -16,15 +16,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     public async void OnMainWindowLoaded()
-        => BezierPolygon = await LoadBezierPolygon("BezierPoints.txt");
+        => await LoadBezierPolygon("BezierPoints.txt");
 
-    public async Task<BezierPolygon> LoadBezierPolygon(string path)
+    public async Task LoadBezierPolygon(string path)
     {
         try
         {
             using var stream = new StreamReader(path);
-            var fileContent = await stream.ReadToEndAsync();
-            return new BezierPolygon(fileContent);
+            var fileContent = await stream.ReadToEndAsync(); 
+            BezierPolygon = new BezierPolygon(fileContent);
+            Mesh = new Mesh(TriangulationPrecision, BezierPolygon);
         }
         catch (Exception e)
         {
@@ -34,6 +35,5 @@ public partial class MainWindowViewModel : ViewModelBase
                 $"Sprawdź poprawność pliku i uruchom aplikację ponownie.");
             Environment.Exit(1);
         }
-        return null!;
     }
 }

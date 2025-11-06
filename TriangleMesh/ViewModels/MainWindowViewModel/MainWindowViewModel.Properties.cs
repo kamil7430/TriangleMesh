@@ -24,9 +24,17 @@ public partial class MainWindowViewModel
     private bool _isFilledTrianglesChecked;
 
     // Sliders
-    [ObservableProperty] 
     private int _triangulationPrecision = MinTriangulationPrecision;
-    
+    public int TriangulationPrecision
+    {
+        get => _triangulationPrecision;
+        set
+        {
+            Mesh = new Mesh(value, BezierPolygon);
+            SetProperty(ref _triangulationPrecision, value);
+        }
+    }
+
     private double _alphaAngle;
     public double AlphaAngle
     {

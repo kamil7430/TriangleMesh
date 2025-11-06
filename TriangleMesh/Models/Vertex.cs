@@ -24,4 +24,10 @@ public class Vertex
 
     public Vector3D PostRotationN
         => N.Rotate();
+
+    public Vertex(double u, double v)
+    {
+        U = u;
+        V = v;
+    }
 }
