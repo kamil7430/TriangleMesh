@@ -68,7 +68,7 @@
             <Separator Margin="0, 15"/>
             
             <TextBlock FontWeight="Bold">
-                Kąt alfa:
+                Kąt alfa (oś z):
             </TextBlock>
             <Grid ColumnDefinitions="Auto,*,Auto">
                 <TextBlock Grid.Column="0" 
@@ -91,7 +91,7 @@
             <Separator Margin="0, 15"/>
             
             <TextBlock FontWeight="Bold">
-                Kąt beta:
+                Kąt beta (oś x):
             </TextBlock>
             <Grid ColumnDefinitions="Auto,*,Auto">
                 <TextBlock Grid.Column="0" 

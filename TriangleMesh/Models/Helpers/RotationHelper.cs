@@ -27,7 +27,7 @@ public static class RotationHelper
         }
     }
 
-    private static Matrix _rotationMatrix;
+    private static Matrix _rotationMatrix = Matrix.Identity;
 
     public static Vector3D Rotate(this Vector3D v)
         => _rotationMatrix.MultiplicateBy(v);
