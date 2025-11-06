@@ -6,7 +6,7 @@ using TriangleMesh.Views.Helpers;
 
 namespace TriangleMesh.Views;
 
-public partial class MainWindowRenderer
+public class MainWindowRenderer
 {
     private readonly WriteableBitmap _buffer;
     private readonly MainWindowViewModel _viewModel;
@@ -51,7 +51,10 @@ public partial class MainWindowRenderer
 
     private unsafe void RenderBezierPolygon(uint* ptr)
     {
-        var pixels = LineDrawer.GetPixelsToPaint(_viewModel.BezierPolygon!.GetEdges()
+        if (_viewModel.BezierPolygon == null)
+            return;
+
+        var pixels = LineDrawer.GetPixelsToPaint(_viewModel.BezierPolygon.GetEdges()
             .Select(t => (t.Cp1.PostRotationP.ToVector().ModelToCanvas(),
                 t.Cp2.PostRotationP.ToVector().ModelToCanvas())));
 
