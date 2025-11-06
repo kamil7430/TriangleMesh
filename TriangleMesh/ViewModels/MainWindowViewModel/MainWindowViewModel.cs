@@ -15,7 +15,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     public void OnMainWindowLoaded()
-        => LoadBezierPolygon("BezierPoints.txt");
+        => BezierPolygon = LoadBezierPolygon("BezierPoints.txt");
 
     public BezierPolygon? LoadBezierPolygon(string path)
     {
@@ -27,10 +27,10 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         catch (Exception e)
         {
-            _messageBoxShower.ShowMessageBox("B³¹d",
-                $"Podczas ³adowania punktów w wielok¹cie Beziera wyst¹pi³ b³¹d:" +
+            _messageBoxShower.ShowMessageBox("BÅ‚Ä…d",
+                $"Podczas Å‚adowania punktÃ³w w wielokÄ…cie Beziera wystÄ…piÅ‚ bÅ‚Ä…d:" +
                 $"\n{e.Message}\n" +
-                $"SprawdŸ poprawnoœæ pliku i uruchom aplikacjê ponownie.");
+                $"SprawdÅº poprawnoÅ›Ä‡ pliku i uruchom aplikacjÄ™ ponownie.");
         }
         return null;
     }

@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Collections.Generic;
+using Avalonia;
 
 namespace TriangleMesh.Models;
 
@@ -6,9 +7,9 @@ public class BezierPolygon
 {
     private const int DIMENSION_SIZE = 4;
 
-    public Vector3D[,] ControlPoints { get; private set; }
+    public ControlPoint[,] ControlPoints { get; private set; }
 
-    public BezierPolygon(Vector3D[,] controlPoints)
+    public BezierPolygon(ControlPoint[,] controlPoints)
     {
         ControlPoints = controlPoints;
     }
@@ -17,7 +18,7 @@ public class BezierPolygon
     {
         var pointsLines = pointsFile.Split('\n');
 
-        ControlPoints = new Vector3D[DIMENSION_SIZE, DIMENSION_SIZE];
+        ControlPoints = new ControlPoint[DIMENSION_SIZE, DIMENSION_SIZE];
 
         for (int i = 0; i < DIMENSION_SIZE; i++)
         {
@@ -27,7 +28,21 @@ public class BezierPolygon
                 var x = double.Parse(point[0]);
                 var y = double.Parse(point[1]);
                 var z = double.Parse(point[2]);
-                ControlPoints[i, j] = new Vector3D(x, y, z);
+                ControlPoints[i, j] = new ControlPoint(x, y, z);
+            }
+        }
+    }
+
+    public IEnumerable<(ControlPoint Cp1, ControlPoint Cp2)> GetEdges()
+    {
+        for (int i = 0; i < DIMENSION_SIZE; i++)
+        {
+            for (int j = 0; j < DIMENSION_SIZE; j++)
+            {
+                if (i + 1 < DIMENSION_SIZE)
+                    yield return (ControlPoints[i, j], ControlPoints[i + 1, j]);
+                if (j + 1 < DIMENSION_SIZE)
+                    yield return (ControlPoints[i, j], ControlPoints[i, j + 1]);
             }
         }
     }

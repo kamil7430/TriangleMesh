@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using TriangleMesh.Models.Helpers;
 
 namespace TriangleMesh.Models;
 
@@ -12,8 +13,15 @@ public class Vertex
     public Vector3D Pv { get; set; }
     public Vector3D N { get; set; }
 
-    public Vector3D PostRotationP { get; set; }
-    public Vector3D PostRotationPu { get; set; }
-    public Vector3D PostRotationPv { get; set; }
-    public Vector3D PostRotationN { get; set; }
+    public Vector3D PostRotationP
+        => P.Rotate();
+
+    public Vector3D PostRotationPu
+        => Pu.Rotate();
+
+    public Vector3D PostRotationPv
+        => Pv.Rotate();
+
+    public Vector3D PostRotationN
+        => N.Rotate();
 }

@@ -4,9 +4,10 @@ using System.Collections.Generic;
 
 namespace TriangleMesh.Views.Helpers;
 
+// Klasa wzięta z projektu pierwszego
 public static class LineDrawer
 {
-    public static IEnumerable<Vector> GetPixelsToPaint(IEnumerable<(Vector, Vector)> linesToPaint)
+    public static IEnumerable<PixelVector> GetPixelsToPaint(IEnumerable<(Vector, Vector)> linesToPaint)
     {
         foreach (var line in linesToPaint)
         {
@@ -18,7 +19,7 @@ public static class LineDrawer
                 if (v1.Y > v2.Y)
                     (v1, v2) = (v2, v1);
                 for (int y = (int)v1.Y; y < v2.Y; y++)
-                    yield return new Vector(v1.X, y);
+                    yield return new PixelVector((int)v1.X, y);
             }
 
             // Zapewnienie sobie krawędzi "w prawo"
@@ -32,33 +33,33 @@ public static class LineDrawer
                 // Zamiana osi
                 var pixels = BresenhamAlgorithm((int)v1.Y, (int)v1.X, (int)v2.Y, (int)v2.X);
                 foreach (var p in pixels)
-                    yield return new Vector(p.Y, p.X);
+                    yield return new PixelVector(p.Y, p.X);
             }
             else if (tan > 0)
             {
                 // Brak transformacji - przypadek bazowy
                 var pixels = BresenhamAlgorithm((int)v1.X, (int)v1.Y, (int)v2.X, (int)v2.Y);
                 foreach (var p in pixels)
-                    yield return new Vector(p.X, p.Y);
+                    yield return new PixelVector(p.X, p.Y);
             }
             else if (tan > -1)
             {
                 // Odbicie względem osi OX
                 var pixels = BresenhamAlgorithm((int)v1.X, (int)-v1.Y, (int)v2.X, (int)-v2.Y);
                 foreach (var p in pixels)
-                    yield return new Vector(p.X, -p.Y);
+                    yield return new PixelVector(p.X, -p.Y);
             }
             else
             {
                 // Zamiana osi i odbicie względem OX
                 var pixels = BresenhamAlgorithm((int)v2.Y, (int)-v2.X, (int)v1.Y, (int)-v1.X);
                 foreach (var p in pixels)
-                    yield return new Vector(-p.Y, p.X);
+                    yield return new PixelVector(-p.Y, p.X);
             }
         }
     }
 
-    private static List<Vector> BresenhamAlgorithm(int x1, int y1, int x2, int y2)
+    private static List<PixelVector> BresenhamAlgorithm(int x1, int y1, int x2, int y2)
     {
         int dx = x2 - x1;
         int dy = y2 - y1;
@@ -67,7 +68,7 @@ public static class LineDrawer
         int incrNE = 2 * (dy - dx);
         int x = x1;
         int y = y1;
-        List<Vector> pixels = [new Vector(x, y)];
+        List<PixelVector> pixels = [new PixelVector(x, y)];
 
         while (x < x2)
         {
@@ -83,7 +84,7 @@ public static class LineDrawer
                 y++;
             }
 
-            pixels.Add(new Vector(x, y));
+            pixels.Add(new PixelVector(x, y));
         }
 
         return pixels;

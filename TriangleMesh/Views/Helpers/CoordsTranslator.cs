@@ -7,6 +7,9 @@ public static class CoordsTranslator
     public const int DRAWING_AREA_HEIGHT = 600;
     public const int DRAWING_AREA_WIDTH = 800;
 
+    public static Vector ToVector(this Vector3D v)
+        => new Vector(v.X, v.Y);
+    
     public static Vector ModelToCanvas(this Vector v)
         => new Vector(v.X + DRAWING_AREA_WIDTH / 2, v.Y + DRAWING_AREA_HEIGHT / 2);
 
