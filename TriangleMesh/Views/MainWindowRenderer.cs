@@ -29,9 +29,6 @@ public class MainWindowRenderer
 
     public unsafe void Render()
     {
-        if (_viewModel.BezierPolygon == null)
-            return;
-
         var lockedFramebuffer = _buffer.Lock();
         var ptr = (uint*)lockedFramebuffer.Address;
 
@@ -51,9 +48,6 @@ public class MainWindowRenderer
 
     private unsafe void RenderBezierPolygon(uint* ptr)
     {
-        if (_viewModel.BezierPolygon == null)
-            return;
-
         var pixels = LineDrawer.GetPixelsToPaint(_viewModel.BezierPolygon.GetEdges()
             .Select(t => (t.Cp1.PostRotationP.ToVector().ModelToCanvas(),
                 t.Cp2.PostRotationP.ToVector().ModelToCanvas())));

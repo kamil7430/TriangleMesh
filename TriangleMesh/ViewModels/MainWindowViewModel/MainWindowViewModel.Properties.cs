@@ -7,17 +7,25 @@ namespace TriangleMesh.ViewModels;
 public partial class MainWindowViewModel
 {
     // Model
-    [ObservableProperty] private BezierPolygon? _bezierPolygon;
+    [ObservableProperty] 
+    private BezierPolygon _bezierPolygon;
+    
+    [ObservableProperty] 
+    private Mesh _mesh;
 
     // Check boxes
-    [ObservableProperty] private bool _isBezierPolygonChecked;
+    [ObservableProperty] 
+    private bool _isBezierPolygonChecked;
     
-    [ObservableProperty] private bool _isTriangleMeshChecked;
+    [ObservableProperty] 
+    private bool _isTriangleMeshChecked;
     
-    [ObservableProperty] private bool _isFilledTrianglesChecked;
+    [ObservableProperty] 
+    private bool _isFilledTrianglesChecked;
 
     // Sliders
-    [ObservableProperty] private int _triangulationPrecision;
+    [ObservableProperty] 
+    private int _triangulationPrecision = MinTriangulationPrecision;
     
     private double _alphaAngle;
     public double AlphaAngle
