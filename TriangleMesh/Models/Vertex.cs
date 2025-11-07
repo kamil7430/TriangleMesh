@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Numerics;
+using Avalonia;
 using TriangleMesh.Models.Algorithms;
 using TriangleMesh.Models.Helpers;
 
@@ -19,7 +20,8 @@ public class Vertex
     public Vector3D P { get; }
     public Vector3D Pu { get; }
     public Vector3D Pv { get; }
-    public Vector3D N { get; }
+    public Vector3D N
+        => Pu.Cross(Pv);
 
     public Vector3D PostRotationP
         => P.Rotate();
