@@ -1,17 +1,25 @@
 ﻿using Avalonia;
+using TriangleMesh.Models.Algorithms;
 using TriangleMesh.Models.Helpers;
 
 namespace TriangleMesh.Models;
 
 public class Vertex
 {
-    public double U { get; set; }
-    public double V { get; set; }
+    public int U { get; }
+    public int V { get; }
+    public int Precision { get; }
+    
+    public double UFraction 
+        => (double)U / Precision;
 
-    public Vector3D P { get; set; }
-    public Vector3D Pu { get; set; }
-    public Vector3D Pv { get; set; }
-    public Vector3D N { get; set; }
+    public double VFraction
+        => (double)V / Precision;
+
+    public Vector3D P { get; }
+    public Vector3D Pu { get; }
+    public Vector3D Pv { get; }
+    public Vector3D N { get; }
 
     public Vector3D PostRotationP
         => P.Rotate();
@@ -25,9 +33,11 @@ public class Vertex
     public Vector3D PostRotationN
         => N.Rotate();
 
-    public Vertex(double u, double v)
+    public Vertex(int u, int v, int precision, BezierPolygon bezierPolygon)
     {
         U = u;
         V = v;
+        Precision = precision;
+        P = DeCasteljau.FindPointCoords(bezierPolygon.ControlPoints, UFraction, VFraction);
     }
 }

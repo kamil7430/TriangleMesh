@@ -5,7 +5,7 @@ namespace TriangleMesh.Models;
 
 public class BezierPolygon
 {
-    private const int DIMENSION_SIZE = 4;
+    public const int DIMENSION_SIZE = 4;
 
     public ControlPoint[,] ControlPoints { get; private set; }
 
