@@ -35,30 +35,30 @@ public class BezierPolygon
         }
 
         // First dimension derivative
-        var fdcp = new ControlPoint[DIMENSION_SIZE - 1, DIMENSION_SIZE];
+        var fddcp = new ControlPoint[DIMENSION_SIZE - 1, DIMENSION_SIZE];
         for (int i = 0; i < DIMENSION_SIZE - 1; i++)
         {
             for (int j = 0; j < DIMENSION_SIZE; j++)
             {
                 var vector = ControlPoints[i + 1, j].P - ControlPoints[i, j].P;
                 vector *= DIMENSION_SIZE - 1;
-                fdcp[i, j] = new ControlPoint(vector);
+                fddcp[i, j] = new ControlPoint(vector);
             }
         }
-        FirstDimensionDerivative = new BezierPolygon(fdcp);
+        FirstDimensionDerivative = new BezierPolygon(fddcp);
         
         // Second dimension derivative
-        var sdcp = new ControlPoint[DIMENSION_SIZE, DIMENSION_SIZE - 1];
+        var sddcp = new ControlPoint[DIMENSION_SIZE, DIMENSION_SIZE - 1];
         for (int i = 0; i < DIMENSION_SIZE; i++)
         {
             for (int j = 0; j < DIMENSION_SIZE - 1; j++)
             {
                 var vector = ControlPoints[i, j + 1].P - ControlPoints[i, j].P;
                 vector *= DIMENSION_SIZE - 1;
-                sdcp[i, j] = new ControlPoint(vector);
+                sddcp[i, j] = new ControlPoint(vector);
             }
         }
-        SecondDimensionDerivative = new BezierPolygon(sdcp);
+        SecondDimensionDerivative = new BezierPolygon(sddcp);
     }
 
     public IEnumerable<(ControlPoint Cp1, ControlPoint Cp2)> GetEdges()

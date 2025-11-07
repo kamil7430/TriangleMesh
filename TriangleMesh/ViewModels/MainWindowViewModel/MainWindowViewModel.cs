@@ -20,20 +20,20 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public async Task LoadBezierPolygon(string path)
     {
-        // try
-        // {
+        try
+        {
             using var stream = new StreamReader(path);
             var fileContent = await stream.ReadToEndAsync(); 
             BezierPolygon = new BezierPolygon(fileContent);
             Mesh = new Mesh(TriangulationPrecision, BezierPolygon);
-        // }
-        // catch (Exception e)
-        // {
-        //     await _messageBoxShower.ShowMessageBoxAsync("Błąd",
-        //         $"Podczas ładowania punktów w wielokącie Beziera wystąpił błąd:" +
-        //         $"\n{e.Message}\n" +
-        //         $"Sprawdź poprawność pliku i uruchom aplikację ponownie.");
-        //     Environment.Exit(1);
-        // }
+        }
+        catch (Exception e)
+        {
+            await _messageBoxShower.ShowMessageBoxAsync("Błąd",
+                $"Podczas ładowania punktów w wielokącie Beziera wystąpił błąd:" +
+                $"\n{e.Message}\n" +
+                $"Sprawdź poprawność pliku i uruchom aplikację ponownie.");
+            Environment.Exit(1);
+        }
     }
 }
