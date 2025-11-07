@@ -1,4 +1,6 @@
-﻿namespace TriangleMesh.Models;
+﻿using System.Collections.Generic;
+
+namespace TriangleMesh.Models;
 
 public class Mesh
 {
@@ -19,5 +21,15 @@ public class Mesh
                 Triangles[u, v, 0] = new Triangle(Vertices[u, v], Vertices[u + 1, v], Vertices[u + 1, v + 1]);
                 Triangles[u, v, 1] = new Triangle(Vertices[u, v], Vertices[u, v + 1], Vertices[u + 1, v + 1]);
             }
+    }
+
+    public IEnumerable<(Vertex V1, Vertex V2)> GetTriangleMeshEdges()
+    {
+        foreach (var triangle in Triangles)
+        {
+            yield return (triangle.V1, triangle.V2);
+            yield return (triangle.V1, triangle.V3);
+            yield return (triangle.V2, triangle.V3);
+        }
     }
 }

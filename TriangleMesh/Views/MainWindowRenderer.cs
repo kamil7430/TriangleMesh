@@ -8,6 +8,9 @@ namespace TriangleMesh.Views;
 
 public class MainWindowRenderer
 {
+    private const uint BEZIER_POLYGON_COLOR = 0xFF00FF00;
+    private const uint TRIANGLE_MESH_COLOR = 0xFFFF00FF;
+    
     private readonly WriteableBitmap _buffer;
     private readonly MainWindowViewModel _viewModel;
 
@@ -34,6 +37,9 @@ public class MainWindowRenderer
 
         ClearBitmap(ptr);
 
+        if (_viewModel.IsTriangleMeshChecked)
+            RenderTriangleMesh(ptr);
+        
         if (_viewModel.IsBezierPolygonChecked)
             RenderBezierPolygon(ptr);
 
@@ -46,15 +52,19 @@ public class MainWindowRenderer
             Unsafe.CopyBlock(ptr, b, _blankImageSize);
     }
 
+    private unsafe void RenderTriangleMesh(uint* ptr)
+    {
+        var pixels = LineDrawer.GetPixelsToPaint(_viewModel.GetTriangleMeshEdges());
+        
+        foreach (var p in pixels)
+            *(ptr + p.Y * _width + p.X) = TRIANGLE_MESH_COLOR;
+    }
+    
     private unsafe void RenderBezierPolygon(uint* ptr)
     {
-        var pixels = LineDrawer.GetPixelsToPaint(_viewModel.BezierPolygon.GetEdges()
-            .Select(t => (t.Cp1.PostRotationP.ToVector().ModelToCanvas(),
-                t.Cp2.PostRotationP.ToVector().ModelToCanvas())));
-
-        uint greenColor = 0xFF00FF00;
+        var pixels = LineDrawer.GetPixelsToPaint(_viewModel.GetBezierPolygonEdges());
 
         foreach (var p in pixels)
-            *(ptr + p.Y * _width + p.X) = greenColor;
+            *(ptr + p.Y * _width + p.X) = BEZIER_POLYGON_COLOR;
     }
 }
