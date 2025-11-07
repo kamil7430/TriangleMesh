@@ -3,6 +3,7 @@
         xmlns:vm="using:TriangleMesh.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:avaloniaColorPicker="clr-namespace:AvaloniaColorPicker;assembly=AvaloniaColorPicker"
         mc:Ignorable="d"
         x:Class="TriangleMesh.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -43,74 +44,156 @@
                VerticalAlignment="Center"
                HorizontalAlignment="Center"/>
         
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
-            <TextBlock FontWeight="Bold">
-                Dokładność triangulacji:
-            </TextBlock>
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <TextBlock Grid.Column="0" 
-                           Text="{Binding MinTriangulationPrecision}"
-                           VerticalAlignment="Center"
-                           Margin="0,0,5,0"/>
-                <Slider Grid.Column="1"
-                        Minimum="{Binding MinTriangulationPrecision}" 
-                        Maximum="{Binding MaxTriangulationPrecision}"
-                        Value="{Binding TriangulationPrecision}"/>
-                <TextBlock Grid.Column="2" 
-                           Text="{Binding MaxTriangulationPrecision}"
-                           VerticalAlignment="Center"
-                           Margin="5,0,0,0"/>
-            </Grid>
-            <TextBlock
-                Text="{Binding TriangulationPrecision, StringFormat='Wartość: {0}'}"
-                FontStyle="Italic"/>
-            
-            <Separator Margin="0, 15"/>
-            
-            <TextBlock FontWeight="Bold">
-                Kąt alfa (oś z):
-            </TextBlock>
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <TextBlock Grid.Column="0" 
-                           Text="{Binding MinAlphaAngle}"
-                           VerticalAlignment="Center"
-                           Margin="0,0,5,0"/>
-                <Slider Grid.Column="1"
-                        Minimum="{Binding MinAlphaAngle}" 
-                        Maximum="{Binding MaxAlphaAngle}"
-                        Value="{Binding AlphaAngle}"/>
-                <TextBlock Grid.Column="2" 
-                           Text="{Binding MaxAlphaAngle}"
-                           VerticalAlignment="Center"
-                           Margin="5,0,0,0"/>
-            </Grid>
-            <TextBlock
-                Text="{Binding AlphaAngle, StringFormat='Wartość: {0:F2}'}"
-                FontStyle="Italic"/>
-            
-            <Separator Margin="0, 15"/>
-            
-            <TextBlock FontWeight="Bold">
-                Kąt beta (oś x):
-            </TextBlock>
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <TextBlock Grid.Column="0" 
-                           Text="{Binding MinBetaAngle}"
-                           VerticalAlignment="Center"
-                           Margin="0,0,5,0"/>
-                <Slider Grid.Column="1"
-                        Minimum="{Binding MinBetaAngle}" 
-                        Maximum="{Binding MaxBetaAngle}"
-                        Value="{Binding BetaAngle}"/>
-                <TextBlock Grid.Column="2" 
-                           Text="{Binding MaxBetaAngle}"
-                           VerticalAlignment="Center"
-                           Margin="5,0,0,0"/>
-            </Grid>
-            <TextBlock
-                Text="{Binding BetaAngle, StringFormat='Wartość: {0:F2}'}"
-                FontStyle="Italic"/>
-        </StackPanel>
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
+            <StackPanel Margin="10">
+                <TextBlock FontWeight="Bold">
+                    Dokładność triangulacji:
+                </TextBlock>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" 
+                               Text="{Binding MinTriangulationPrecision}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <Slider Grid.Column="1"
+                            Minimum="{Binding MinTriangulationPrecision}" 
+                            Maximum="{Binding MaxTriangulationPrecision}"
+                            Value="{Binding TriangulationPrecision}"/>
+                    <TextBlock Grid.Column="2" 
+                               Text="{Binding MaxTriangulationPrecision}"
+                               VerticalAlignment="Center"
+                               Margin="5,0,0,0"/>
+                </Grid>
+                <TextBlock
+                    Text="{Binding TriangulationPrecision, StringFormat='Wartość: {0}'}"
+                    FontStyle="Italic"/>
+                
+                <Separator Margin="0, 5"/>
+                
+                <TextBlock FontWeight="Bold">
+                    Kąt alfa (oś z):
+                </TextBlock>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" 
+                               Text="{Binding MinAlphaAngle}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <Slider Grid.Column="1"
+                            Minimum="{Binding MinAlphaAngle}" 
+                            Maximum="{Binding MaxAlphaAngle}"
+                            Value="{Binding AlphaAngle}"/>
+                    <TextBlock Grid.Column="2" 
+                               Text="{Binding MaxAlphaAngle}"
+                               VerticalAlignment="Center"
+                               Margin="5,0,0,0"/>
+                </Grid>
+                <TextBlock
+                    Text="{Binding AlphaAngle, StringFormat='Wartość: {0:F2}'}"
+                    FontStyle="Italic"/>
+                
+                <Separator Margin="0, 5"/>
+                
+                <TextBlock FontWeight="Bold">
+                    Kąt beta (oś x):
+                </TextBlock>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" 
+                               Text="{Binding MinBetaAngle}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <Slider Grid.Column="1"
+                            Minimum="{Binding MinBetaAngle}" 
+                            Maximum="{Binding MaxBetaAngle}"
+                            Value="{Binding BetaAngle}"/>
+                    <TextBlock Grid.Column="2" 
+                               Text="{Binding MaxBetaAngle}"
+                               VerticalAlignment="Center"
+                               Margin="5,0,0,0"/>
+                </Grid>
+                <TextBlock
+                    Text="{Binding BetaAngle, StringFormat='Wartość: {0:F2}'}"
+                    FontStyle="Italic"/>
+                
+                <Separator Margin="0, 5"/>
+                
+                <TextBlock FontWeight="Bold">
+                    Wpływ składowej rozproszonej:
+                </TextBlock>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" 
+                               Text="{Binding MinComponentValue}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <Slider Grid.Column="1"
+                            Minimum="{Binding MinComponentValue}" 
+                            Maximum="{Binding MaxComponentValue}"
+                            Value="{Binding DistributedComponent}"/>
+                    <TextBlock Grid.Column="2" 
+                               Text="{Binding MaxComponentValue}"
+                               VerticalAlignment="Center"
+                               Margin="5,0,0,0"/>
+                </Grid>
+                <TextBlock
+                    Text="{Binding DistributedComponent, StringFormat='Wartość: {0:F3}'}"
+                    FontStyle="Italic"/>
+                
+                <Separator Margin="0, 5"/>
+                
+                <TextBlock FontWeight="Bold">
+                    Wpływ składowej zwierciadlanej:
+                </TextBlock>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" 
+                               Text="{Binding MinComponentValue}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <Slider Grid.Column="1"
+                            Minimum="{Binding MinComponentValue}" 
+                            Maximum="{Binding MaxComponentValue}"
+                            Value="{Binding SpecularComponent}"/>
+                    <TextBlock Grid.Column="2" 
+                               Text="{Binding MaxComponentValue}"
+                               VerticalAlignment="Center"
+                               Margin="5,0,0,0"/>
+                </Grid>
+                <TextBlock
+                    Text="{Binding SpecularComponent, StringFormat='Wartość: {0:F3}'}"
+                    FontStyle="Italic"/>
+                
+                <Separator Margin="0, 5"/>
+                
+                <Grid ColumnDefinitions="Auto, Auto">
+                    <TextBlock Grid.Column="0" FontWeight="Bold"
+                               VerticalAlignment="Center">
+                        Kolor światła:
+                    </TextBlock>
+                    <avaloniaColorPicker:ColorButton Grid.Column="1"
+                                                     Color="{Binding LightColor}"/>
+                </Grid>
+                
+                <Separator Margin="0, 5"/>
+                
+                <TextBlock FontWeight="Bold">
+                    Zwierciadlaność:
+                </TextBlock>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" 
+                               Text="{Binding MinReflectionFactor}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <Slider Grid.Column="1"
+                            Minimum="{Binding MinReflectionFactor}" 
+                            Maximum="{Binding MaxReflectionFactor}"
+                            Value="{Binding ReflectionFactor}"/>
+                    <TextBlock Grid.Column="2" 
+                               Text="{Binding MaxReflectionFactor}"
+                               VerticalAlignment="Center"
+                               Margin="5,0,0,0"/>
+                </Grid>
+                <TextBlock
+                    Text="{Binding ReflectionFactor, StringFormat='Wartość: {0}'}"
+                    FontStyle="Italic"/>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 
 </Window>

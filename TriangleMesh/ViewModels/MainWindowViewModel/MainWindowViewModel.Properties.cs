@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using TriangleMesh.Models;
 using TriangleMesh.Models.Helpers;
 
@@ -57,4 +58,16 @@ public partial class MainWindowViewModel
             SetProperty(ref _betaAngle, value);
         }
     }
+
+    [ObservableProperty] 
+    private double _distributedComponent;
+    
+    [ObservableProperty]
+    private double _specularComponent;
+
+    [ObservableProperty] 
+    private Color _lightColor = Colors.White;
+
+    [ObservableProperty] 
+    private int _reflectionFactor = MinReflectionFactor;
 }

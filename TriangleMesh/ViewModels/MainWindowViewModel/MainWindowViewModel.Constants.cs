@@ -9,4 +9,8 @@ public partial class MainWindowViewModel
     public static double MaxAlphaAngle => 90;
     public static double MinBetaAngle => -90;
     public static double MaxBetaAngle => 90;
+    public static double MinComponentValue => 0;
+    public static double MaxComponentValue => 1;
+    public static int MinReflectionFactor => 1;
+    public static int MaxReflectionFactor => 100;
 }

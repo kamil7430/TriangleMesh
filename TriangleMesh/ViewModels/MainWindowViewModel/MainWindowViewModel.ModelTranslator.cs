@@ -18,4 +18,7 @@ public partial class MainWindowViewModel
 
     public IEnumerable<Triangle> GetTriangles()
         => Mesh.Triangles.Cast<Triangle>();
+
+    public Rgb GetLightColor()
+        => new Rgb(LightColor.R, LightColor.G, LightColor.B);
 }
