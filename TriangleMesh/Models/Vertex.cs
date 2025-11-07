@@ -10,8 +10,8 @@ public class Vertex
     public int U { get; }
     public int V { get; }
     public int Precision { get; }
-    
-    public double UFraction 
+
+    public double UFraction
         => (double)U / Precision;
 
     public double VFraction
@@ -20,10 +20,9 @@ public class Vertex
     public Vector3D P { get; }
     public Vector3D Pu { get; }
     public Vector3D Pv { get; }
-    public Vector3D N
-        => Pu.Cross(Pv);
+    public Vector3D N { get; }
 
-    public Vector3D PostRotationP
+public Vector3D PostRotationP
         => P.Rotate();
 
     public Vector3D PostRotationPu
@@ -41,5 +40,8 @@ public class Vertex
         V = v;
         Precision = precision;
         P = DeCasteljau.FindPointCoords(bezierPolygon.ControlPoints, UFraction, VFraction);
+        Pu = default;
+        Pv = default;
+        N = Pu.Cross(Pv);
     }
 }
