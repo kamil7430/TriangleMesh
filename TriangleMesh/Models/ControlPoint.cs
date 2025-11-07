@@ -14,4 +14,9 @@ public class ControlPoint
     {
         P = new Vector3D(x, y, z);
     }
+
+    public ControlPoint(Vector3D p)
+    {
+        P = p;
+    }
 }
