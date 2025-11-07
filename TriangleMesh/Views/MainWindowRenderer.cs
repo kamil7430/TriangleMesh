@@ -37,6 +37,9 @@ public class MainWindowRenderer
 
         ClearBitmap(ptr);
 
+        if (_viewModel.IsFilledTrianglesChecked)
+            RenderFilledTriangles(ptr);
+        
         if (_viewModel.IsTriangleMeshChecked)
             RenderTriangleMesh(ptr);
         
@@ -50,6 +53,11 @@ public class MainWindowRenderer
     {
         fixed (byte* b = _blankImage)
             Unsafe.CopyBlock(ptr, b, _blankImageSize);
+    }
+
+    private unsafe void RenderFilledTriangles(uint* ptr)
+    {
+        
     }
 
     private unsafe void RenderTriangleMesh(uint* ptr)

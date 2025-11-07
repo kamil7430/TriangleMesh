@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
+using TriangleMesh.Models;
 using TriangleMesh.Views.Helpers;
 
 namespace TriangleMesh.ViewModels;
@@ -14,4 +15,7 @@ public partial class MainWindowViewModel
     public IEnumerable<(Vector, Vector)> GetTriangleMeshEdges()
         => Mesh.GetTriangleMeshEdges().Select(t => (t.V1.PostRotationP.ToVector().ModelToCanvas(),
             t.V2.PostRotationP.ToVector().ModelToCanvas()));
+
+    public IEnumerable<Triangle> GetTriangles()
+        => Mesh.Triangles.Cast<Triangle>();
 }
