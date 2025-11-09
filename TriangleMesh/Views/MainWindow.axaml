@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:avaloniaColorPicker="clr-namespace:AvaloniaColorPicker;assembly=AvaloniaColorPicker"
+        xmlns:converters="clr-namespace:TriangleMesh.Views.Converters"
+        xmlns:model="clr-namespace:TriangleMesh.Models"
         mc:Ignorable="d"
         x:Class="TriangleMesh.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -11,6 +13,10 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="Siatka trójkątów">
 
+    <Window.Resources>
+        <converters:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
+    </Window.Resources>
+    
     <Window.Styles>
         <Style Selector="Label.VerticalSeparator">
             <Setter Property="Content" Value="|" />
@@ -45,7 +51,7 @@
                HorizontalAlignment="Center"/>
         
         <ScrollViewer Grid.Row="1" Grid.Column="1">
-            <StackPanel Margin="10">
+            <StackPanel Margin="10,10,20,10">
                 <TextBlock FontWeight="Bold">
                     Dokładność triangulacji:
                 </TextBlock>
@@ -163,12 +169,47 @@
                 
                 <Grid ColumnDefinitions="Auto, Auto">
                     <TextBlock Grid.Column="0" FontWeight="Bold"
-                               VerticalAlignment="Center">
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0">
                         Kolor światła:
                     </TextBlock>
                     <avaloniaColorPicker:ColorButton Grid.Column="1"
                                                      Color="{Binding LightColor}"/>
                 </Grid>
+                
+                <Separator Margin="0, 5"/>
+                
+                <TextBlock FontWeight="Bold">
+                    Tekstura obiektu:
+                </TextBlock>
+                <Grid RowDefinitions="Auto,Auto">
+                    <RadioButton Grid.Row="0" GroupName="ObjectTextureType"
+                                 Content="Jednolity kolor"
+                                 IsChecked="{Binding ObjectTextureType,
+                                 Converter={StaticResource EnumToBoolConverter},
+                                 ConverterParameter={x:Static model:ObjectTextureType.OneColor}}"/>
+                    <RadioButton Grid.Row="1" GroupName="ObjectTextureType"
+                                 Content="Zewnętrzna tekstura"
+                                 IsChecked="{Binding ObjectTextureType,
+                                 Converter={StaticResource EnumToBoolConverter},
+                                 ConverterParameter={x:Static model:ObjectTextureType.ExternalTexture}}"/>
+                </Grid>
+                <Grid IsVisible="{Binding ObjectTextureType,
+                                 Converter={StaticResource EnumToBoolConverter},
+                                 ConverterParameter={x:Static model:ObjectTextureType.OneColor}}"
+                      ColumnDefinitions="Auto,Auto">
+                    <TextBlock Grid.Column="0" Margin="0,0,5,0"
+                               VerticalAlignment="Center">
+                        Kolor obiektu:
+                    </TextBlock>
+                    <avaloniaColorPicker:ColorButton Grid.Column="1"
+                                                     Color="{Binding ObjectColor}"/>
+                </Grid>
+                <Button IsVisible="{Binding ObjectTextureType,
+                                 Converter={StaticResource EnumToBoolConverter},
+                                 ConverterParameter={x:Static model:ObjectTextureType.ExternalTexture}}"
+                        Content="Wybierz teksturę..."
+                        Command="{Binding LoadTextureCommand}"/>
                 
                 <Separator Margin="0, 5"/>
                 

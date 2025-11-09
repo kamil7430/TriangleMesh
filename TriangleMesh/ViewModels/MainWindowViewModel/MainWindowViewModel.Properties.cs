@@ -69,5 +69,11 @@ public partial class MainWindowViewModel
     private Color _lightColor = Colors.White;
 
     [ObservableProperty] 
+    private ObjectTextureType _objectTextureType = ObjectTextureType.OneColor;
+    
+    [ObservableProperty]
+    private Color _objectColor = Colors.White;
+
+    [ObservableProperty] 
     private int _reflectionFactor = MinReflectionFactor;
 }
