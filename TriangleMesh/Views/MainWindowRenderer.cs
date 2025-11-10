@@ -1,5 +1,4 @@
 ﻿using Avalonia.Media.Imaging;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using TriangleMesh.ViewModels;
 using TriangleMesh.Views.Helpers;
@@ -10,6 +9,7 @@ public class MainWindowRenderer
 {
     private const uint BEZIER_POLYGON_COLOR = 0xFF00FF00;
     private const uint TRIANGLE_MESH_COLOR = 0xFFFF00FF;
+    private const uint LIGHT_DIRECTION_COLOR = 0xFFFFFF00;
     
     private readonly WriteableBitmap _buffer;
     private readonly MainWindowViewModel _viewModel;
@@ -46,6 +46,9 @@ public class MainWindowRenderer
         if (_viewModel.IsBezierPolygonChecked)
             RenderBezierPolygon(ptr);
 
+        if (_viewModel.IsLightDirectionChecked)
+            RenderLightDirection(ptr);
+        
         lockedFramebuffer.Dispose();
     }
 
@@ -74,5 +77,14 @@ public class MainWindowRenderer
 
         foreach (var p in pixels)
             *(ptr + p.Y * _width + p.X) = BEZIER_POLYGON_COLOR;
+    }
+
+    private unsafe void RenderLightDirection(uint* ptr)
+    {
+        var vector = _viewModel.GetLightVector().ToVector().ModelToCanvas();
+        var pixels = LineDrawer.GetPixelsToPaint([(CoordsTranslator.MiddleOfScreen, vector)]);
+        
+        foreach (var p in pixels)
+            *(ptr + p.Y * _width + p.X) = LIGHT_DIRECTION_COLOR;
     }
 }

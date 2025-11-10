@@ -7,6 +7,9 @@ public static class CoordsTranslator
     public const int DRAWING_AREA_HEIGHT = 600;
     public const int DRAWING_AREA_WIDTH = 800;
 
+    public static readonly Vector MiddleOfScreen
+        = new Vector(DRAWING_AREA_WIDTH / 2, DRAWING_AREA_HEIGHT / 2);
+
     public static Vector ToVector(this Vector3D v)
         => new Vector(v.X, v.Y);
     

@@ -42,6 +42,10 @@
             
             <CheckBox IsChecked="{Binding IsFilledTrianglesChecked}"
                       Content="Wypełnione trójkąty"/>
+            <Label Classes="VerticalSeparator"/>
+            
+            <CheckBox IsChecked="{Binding IsLightDirectionChecked}"
+                      Content="Kierunek światła"/>
         </StackPanel>
         
         <Image Grid.Row="1" Grid.Column="0" Margin="10"

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using TriangleMesh.Models;
+using TriangleMesh.Models.Helpers;
 using TriangleMesh.Views.Helpers;
 
 namespace TriangleMesh.ViewModels;
@@ -21,4 +23,11 @@ public partial class MainWindowViewModel
 
     public Rgb GetLightColor()
         => new Rgb(LightColor.R, LightColor.G, LightColor.B);
+
+    public Vector3D GetLightVector()
+        => new Vector3D(
+            LightVectorVisualLength * Math.Sin(CurrentLightAngle),
+            LightVectorVisualLength * Math.Cos(CurrentLightAngle),
+            ZLightAnimationPosition
+        ).Rotate();
 }

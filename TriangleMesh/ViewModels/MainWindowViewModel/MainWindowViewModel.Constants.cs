@@ -1,8 +1,12 @@
+using System;
+
 namespace TriangleMesh.ViewModels;
 
 public partial class MainWindowViewModel
 {
     // Read-only (constant) fields
+    public static double LightRotationAngleSpeedInRadiansPerTick => 1 / (2 * Math.PI);
+    public static double LightVectorVisualLength = 200;
     public static int MinTriangulationPrecision => 3;
     public static int MaxTriangulationPrecision => 30;
     public static double MinAlphaAngle => -90;

@@ -15,6 +15,9 @@ public partial class MainWindowViewModel
     [ObservableProperty] 
     private Mesh _mesh;
 
+    [ObservableProperty] 
+    private double _currentLightAngle;
+
     // Check boxes
     [ObservableProperty] 
     private bool _isBezierPolygonChecked;
@@ -24,6 +27,9 @@ public partial class MainWindowViewModel
     
     [ObservableProperty] 
     private bool _isFilledTrianglesChecked;
+    
+    [ObservableProperty]
+    private bool _isLightDirectionChecked;
 
     // Sliders
     private int _triangulationPrecision = MinTriangulationPrecision;
@@ -90,7 +96,7 @@ public partial class MainWindowViewModel
     private double _zLightAnimationPosition;
     
     [ObservableProperty]
-    private bool _isLightAnimationStopped;
+    private bool _isLightAnimationStopped = true;
 
     [ObservableProperty] 
     private int _reflectionFactor = MinReflectionFactor;

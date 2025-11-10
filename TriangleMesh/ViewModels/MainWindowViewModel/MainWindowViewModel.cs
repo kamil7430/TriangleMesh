@@ -21,7 +21,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public async void OnMainWindowLoaded()
         => await LoadBezierPolygon("BezierPoints.txt");
 
-    public async Task LoadBezierPolygon(string path)
+    private async Task LoadBezierPolygon(string path)
     {
         try
         {
@@ -38,5 +38,15 @@ public partial class MainWindowViewModel : ViewModelBase
                 $"Sprawdź poprawność pliku i uruchom aplikację ponownie.");
             Environment.Exit(1);
         }
+    }
+
+    public void OnLightAnimationTimerTick()
+    {
+        if (IsLightAnimationStopped)
+            return;
+
+        CurrentLightAngle += LightRotationAngleSpeedInRadiansPerTick;
+        if (CurrentLightAngle >= 2 * Math.PI)
+            CurrentLightAngle -= 2 * Math.PI;
     }
 }
