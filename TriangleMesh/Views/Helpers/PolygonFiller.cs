@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using TriangleMesh.Models;
 
@@ -7,6 +8,16 @@ namespace TriangleMesh.Views.Helpers;
 
 public class PolygonFiller
 {
+    private struct AetEntry(double yMax, double x, double delta)
+    {
+        public double YMax { get; } = yMax;
+        public double X { get; set; } = x;
+        public double Delta { get; } = delta;
+    }
+
+    private static LinkedList<AetEntry>[] _et 
+        = new LinkedList<AetEntry>[CoordsTranslator.DRAWING_AREA_HEIGHT];
+        
     private double _kD;
     private double _kS;
     private Rgb _iL;
@@ -30,8 +41,54 @@ public class PolygonFiller
         _m = m;
     }
 
-    public IEnumerable<(PixelVector Vector, double Z)> GetPixelsToPaint(Vertex[] vertices)
+    public IEnumerable<(PixelVector Vector, double Z)> GetPixelsToPaint(IEnumerable<(Vertex, Vertex)> edges)
     {
-        throw new NotImplementedException();
+        FillET(edges);
+        
+        int y = 0;
+        while (_et[y].Count <= 0)
+            y++;
+        
+        var aet = new LinkedList<AetEntry>();
+
+        while (aet.Count > 0 && y < CoordsTranslator.DRAWING_AREA_HEIGHT)
+        {
+            if (_et[y].Count > 0)
+            {
+                aet.AddLast(_et[y].First);
+            }
+        }
+
+        return [];
+    }
+
+    private void FillET(IEnumerable<(Vertex, Vertex)> edges)
+    {
+        foreach (var (v1, v2) in edges)
+        {
+            (Vertex a, Vertex b) = (v1, v2);
+            if (a.PostRotationP.Y > b.PostRotationP.Y)
+                (a, b) = (b, a);
+            
+            // y_min jest w a
+            var aCanvas = a.PostRotationP.ToVector().ModelToCanvas();
+            var bCanvas = b.PostRotationP.ToVector().ModelToCanvas();
+            
+            // pominięcie krótkiej krawędzi
+            if (bCanvas.Y - aCanvas.Y < 1)
+                continue;
+            
+            _et[(int)aCanvas.Y].AddLast(new AetEntry(
+                bCanvas.Y,
+                aCanvas.X,
+                (bCanvas.X - aCanvas.X) / (bCanvas.Y - aCanvas.Y)
+            ));
+        }
+    }
+
+    private double MyCos(Vector3D v1, Vector3D v2)
+    {
+        var result = v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
+        return result <= 0 ? 0 : result;
     }
 }
