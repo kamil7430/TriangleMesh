@@ -119,6 +119,6 @@ public class MyLinkedList<T> : IEnumerable<T>
     private void ThrowIfEmpty()
     {
         if (Head == null)
-            throw new IndexOutOfRangeException("The collection is empty!");
+            throw new InvalidOperationException("The collection is empty!");
     }
 }
