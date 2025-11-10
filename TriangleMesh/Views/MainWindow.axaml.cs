@@ -15,7 +15,7 @@ public partial class MainWindow : Window, IMessageBoxShower
     private readonly PixelSize DRAWING_AREA_SIZE
         = new PixelSize(CoordsTranslator.DRAWING_AREA_WIDTH, CoordsTranslator.DRAWING_AREA_HEIGHT);
     private readonly Vector DPI_VECTOR = new Vector(96, 96);
-    private const double TIMER_INTERVAL_SECONDS = 0.1;
+    private const double TIMER_INTERVAL_SECONDS = 0.05;
 
     private readonly MainWindowViewModel _viewModel;
     private readonly WriteableBitmap _drawingAreaBuffer;
