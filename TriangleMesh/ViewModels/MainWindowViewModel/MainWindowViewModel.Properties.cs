@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using TriangleMesh.Models;
 using TriangleMesh.Models.Helpers;
@@ -48,7 +49,6 @@ public partial class MainWindowViewModel
     }
     
     private double _betaAngle;
-
     public double BetaAngle
     {
         get => _betaAngle;
@@ -73,6 +73,18 @@ public partial class MainWindowViewModel
     
     [ObservableProperty]
     private Color _objectColor = Colors.White;
+    
+    private Bitmap? _objectTexture;
+    public Bitmap ObjectTexture
+    {
+        get
+        {
+            if (_objectTexture == null)
+                RestoreDefaultTexture();
+            return _objectTexture!;
+        }
+        set => SetProperty(ref _objectTexture, value);
+    }
 
     [ObservableProperty] 
     private int _reflectionFactor = MinReflectionFactor;

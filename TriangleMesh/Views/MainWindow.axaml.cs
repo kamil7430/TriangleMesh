@@ -21,7 +21,7 @@ public partial class MainWindow : Window, IMessageBoxShower
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = _viewModel = new MainWindowViewModel(this);
+        DataContext = _viewModel = new MainWindowViewModel(this, GetTopLevel(this)!.StorageProvider);
         Loaded += MainWindow_OnLoaded;
 
         _drawingAreaBuffer = new WriteableBitmap(DRAWING_AREA_SIZE, DPI_VECTOR);

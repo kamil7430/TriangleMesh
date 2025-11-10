@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Avalonia.Platform.Storage;
 using TriangleMesh.Models;
 using TriangleMesh.Services;
 
@@ -9,10 +10,12 @@ namespace TriangleMesh.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IMessageBoxShower _messageBoxShower;
+    private readonly IStorageProvider _storageProvider;
 
-    public MainWindowViewModel(IMessageBoxShower messageBoxShower)
+    public MainWindowViewModel(IMessageBoxShower messageBoxShower, IStorageProvider storageProvider)
     {
         _messageBoxShower = messageBoxShower;
+        _storageProvider = storageProvider;
     }
 
     public async void OnMainWindowLoaded()

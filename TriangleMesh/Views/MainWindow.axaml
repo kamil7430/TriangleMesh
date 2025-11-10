@@ -205,11 +205,14 @@
                     <avaloniaColorPicker:ColorButton Grid.Column="1"
                                                      Color="{Binding ObjectColor}"/>
                 </Grid>
-                <Button IsVisible="{Binding ObjectTextureType,
+                <StackPanel IsVisible="{Binding ObjectTextureType,
                                  Converter={StaticResource EnumToBoolConverter},
-                                 ConverterParameter={x:Static model:ObjectTextureType.ExternalTexture}}"
-                        Content="Wybierz teksturę..."
-                        Command="{Binding LoadTextureCommand}"/>
+                                 ConverterParameter={x:Static model:ObjectTextureType.ExternalTexture}}">
+                        <Button Content="Wybierz teksturę..."
+                                Command="{Binding LoadTextureCommand}"/>
+                        <Button Content="Przywróć domyślną teksturę"
+                                Command="{Binding RestoreDefaultTextureCommand}"/>
+                </StackPanel>
                 
                 <Separator Margin="0, 5"/>
                 
