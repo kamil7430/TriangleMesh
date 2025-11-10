@@ -85,6 +85,12 @@ public partial class MainWindowViewModel
         }
         set => SetProperty(ref _objectTexture, value);
     }
+    
+    [ObservableProperty]
+    private double _zLightAnimationPosition;
+    
+    [ObservableProperty]
+    private bool _isLightAnimationStopped;
 
     [ObservableProperty] 
     private int _reflectionFactor = MinReflectionFactor;
