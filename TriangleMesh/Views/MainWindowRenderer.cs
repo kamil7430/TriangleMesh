@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using System.Runtime.CompilerServices;
+using Avalonia.Platform;
 using TriangleMesh.Models;
 using TriangleMesh.ViewModels;
 using TriangleMesh.Views.Helpers;
@@ -68,12 +69,16 @@ public class MainWindowRenderer
             for (int j = 0; j < _zBuffer.GetLength(1); j++)
                 _zBuffer[i, j] = double.MinValue;
 
+        ILockedFramebuffer? lockedFramebuffer = null;
+        if (_viewModel.ObjectTextureType == ObjectTextureType.ExternalTexture)
+            lockedFramebuffer = _viewModel.ObjectTexture.Lock();
+        
         var filler = new PolygonFiller(
             _viewModel.DistributedComponent,
             _viewModel.SpecularComponent,
             _viewModel.LightColor,
             _viewModel.ObjectTextureType == ObjectTextureType.OneColor ? _viewModel.ObjectColor : null,
-            _viewModel.ObjectTextureType == ObjectTextureType.ExternalTexture ? _viewModel.ObjectTexture : null,
+            lockedFramebuffer,
             _viewModel.GetLightVector(),
             _viewModel.ReflectionFactor
         );
@@ -83,6 +88,8 @@ public class MainWindowRenderer
             foreach (var (p, color) in filler.GetPixelsToPaint(triangle, _zBuffer))
                 *(ptr + p.Y * _width + p.X) = color;
         }
+        
+        lockedFramebuffer?.Dispose();
     }
 
     private unsafe void RenderTriangleMesh(uint* ptr)

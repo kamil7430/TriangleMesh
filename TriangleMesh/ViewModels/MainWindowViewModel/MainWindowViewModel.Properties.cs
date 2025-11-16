@@ -80,8 +80,8 @@ public partial class MainWindowViewModel
     [ObservableProperty]
     private Color _objectColor = Colors.White;
     
-    private Bitmap? _objectTexture;
-    public Bitmap ObjectTexture
+    private WriteableBitmap? _objectTexture;
+    public WriteableBitmap ObjectTexture
     {
         get
         {

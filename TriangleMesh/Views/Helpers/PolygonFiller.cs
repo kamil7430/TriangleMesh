@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using TriangleMesh.Models;
 
 namespace TriangleMesh.Views.Helpers;
@@ -32,26 +33,36 @@ public class PolygonFiller
         }
     }
         
-    private double _kD;
-    private double _kS;
-    private Rgb _iL;
-    private Rgb? _iOColor;
-    private Bitmap? _iOSource;
-    private Vector3D _l;
-    private Vector3D _v;
-    private int _m;
+    private readonly double _kD;
+    private readonly double _kS;
+    private readonly Rgb _iL;
+    private readonly Rgb? _iOColor;
+    private readonly ILockedFramebuffer? _iOSource;
+    private readonly Vector3D _l;
+    private readonly Vector3D _v;
+    private readonly int _m;
 
-    private Rgb GetObjectColorInPoint(double u, double v)
+    private unsafe Rgb GetObjectColorInPoint(double u, double v)
     {
         if (_iOColor != null)
             return _iOColor.Value;
-        else
+
+        if (_iOSource != null)
         {
-            throw new NotImplementedException();
+            var ptr = (uint*)_iOSource.Address;
+            var size = _iOSource.Size;
+            
+            var x = (int)Math.Round(size.Width * u);
+            var y = (int)Math.Round(size.Height * v);
+
+            return Rgb.FromUint(*(ptr + y * _iOSource.RowBytes / 4 + x));
         }
+
+        throw new InvalidOperationException("Both texture sources are null!");
     }
 
-    public PolygonFiller(double kD, double kS, Color iL, Color? iOColor, Bitmap? iOSource, Vector3D l, int m)
+    public PolygonFiller(double kD, double kS, Color iL, Color? iOColor, ILockedFramebuffer? iOSource, Vector3D l,
+        int m)
     {
         _kD = kD;
         _kS = kS;
@@ -124,17 +135,17 @@ public class PolygonFiller
                     var L = Vector3D.Normalize(_l - new Vector3D(p.X, p.Y, z));
                     var R = CalculateR(N, L);
                     
-                    var u = t.V1.UFraction * alpha + t.V2.UFraction * beta + t.V3.UFraction * gamma;
-                    var v = t.V1.VFraction * alpha + t.V2.VFraction * beta + t.V3.VFraction * gamma;
+                    var u = (t.V1.UFraction * alpha + t.V2.UFraction * beta + t.V3.UFraction * gamma).TruncateToZeroOne();
+                    var v = (t.V1.VFraction * alpha + t.V2.VFraction * beta + t.V3.VFraction * gamma).TruncateToZeroOne();
                     var iO = GetObjectColorInPoint(u, v);
                     
                     double r = 0, g = 0, b = 0;
                     var cosNL = MyCos(N, L, 1);
                     var cosVR = MyCos(_v, R, _m);
                     
-                    r = _kD * _iL.R * iO.R * cosNL + _kS * _iL.R * iO.R * cosVR;
-                    g = _kD * _iL.G * iO.G * cosNL + _kS * _iL.G * iO.G * cosVR;
-                    b = _kD * _iL.B * iO.B * cosNL + _kS * _iL.B * iO.B * cosVR;
+                    r = (_kD * _iL.R * iO.R * cosNL + _kS * _iL.R * iO.R * cosVR).TruncateToZeroOne();
+                    g = (_kD * _iL.G * iO.G * cosNL + _kS * _iL.G * iO.G * cosVR).TruncateToZeroOne();
+                    b = (_kD * _iL.B * iO.B * cosNL + _kS * _iL.B * iO.B * cosVR).TruncateToZeroOne();
                     
                     yield return (new PixelVector(x, y), new Rgb(r, g, b).ToUint());
                 }

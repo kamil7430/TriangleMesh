@@ -44,7 +44,7 @@ public partial class MainWindowViewModel
             try
             {
                 await using var stream = await file.OpenReadAsync();
-                ObjectTexture = new Bitmap(stream);
+                ObjectTexture = WriteableBitmap.Decode(stream);
             }
             catch (Exception e)
             {
@@ -59,6 +59,6 @@ public partial class MainWindowViewModel
     {
         var uri = new Uri("avares://TriangleMesh/Assets/golden-retriever.jpg");
         using var stream = AssetLoader.Open(uri);
-        ObjectTexture = new Bitmap(stream);
+        ObjectTexture = WriteableBitmap.Decode(stream);
     }
 }

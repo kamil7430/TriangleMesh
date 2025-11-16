@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets\**" />
+        <AvaloniaResource Include="BezierPoints.txt" />
         <None Remove="Assets\BezierPoints.txt" />
         <AvaloniaResource Include="Assets\BezierPoints.txt" />
     </ItemGroup>

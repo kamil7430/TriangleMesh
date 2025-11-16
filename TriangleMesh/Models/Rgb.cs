@@ -5,8 +5,19 @@ namespace TriangleMesh.Models;
 public record struct Rgb(double R, double G, double B)
 {
     public static Rgb FromColor(Color color)
-        => new Rgb(color.R / 255.0, color.G / 255.0, color.B / 255.0);
+        => new Rgb(
+            color.R / 255.0,
+            color.G / 255.0,
+            color.B / 255.0
+        );
 
+    public static Rgb FromUint(uint color)
+        => new Rgb(
+            ((color >> 16) & 0xFF) / 255.0,
+            ((color >> 8) & 0xFF) / 255.0,
+            (color & 0xFF) / 255.0
+        );
+    
     public uint ToUint()
     {
         var r = R * 255.0;
