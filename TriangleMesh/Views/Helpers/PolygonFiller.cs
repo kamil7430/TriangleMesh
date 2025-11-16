@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Intrinsics;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -89,22 +88,17 @@ public class PolygonFiller
 
         while (y < CoordsTranslator.DRAWING_AREA_HEIGHT)
         {
-            // 1. DODAJ nowe krawędzie
             aet.AddRange(ET[y]);
             
-            // 2. USUŃ stare krawędzie
             aet.RemoveAll(e => !(y < (int)Math.Round(e.YMax)));
             
-            // 3. SORTUJ (ZMIANA: Szybsze sortowanie w miejscu)
             aet.Sort((e1, e2) => e1.X.CompareTo(e2.X));
 
-            // 4. SPRAWDŹ PARZYSTOŚĆ (ZMIANA: Używamy aet)
             if (aet.Count % 2 != 0)
                 throw new Exception($"Nie ma parzystej ilości krawędzi! (y={y}, count={aet.Count})");
             
-            for (int i = 0; i < aet.Count; i += 2) // ZMIANA: Używamy aet
+            for (int i = 0; i < aet.Count; i += 2)
             {
-                // ZMIANA: Używamy aet
                 int startX = (int)Math.Round(aet[i].X);
                 int endX = (int)Math.Round(aet[i + 1].X);
 
@@ -122,7 +116,7 @@ public class PolygonFiller
 
                     var z = v1p.Z * alpha + v2p.Z * beta + v3p.Z * gamma;
                     
-                    if (z < zBuffer[x, y]) // Poprawiony test Z-bufora
+                    if (z < zBuffer[x, y])
                         continue;
                     zBuffer[x, y] = z;
 
@@ -145,9 +139,6 @@ public class PolygonFiller
                     yield return (new PixelVector(x, y), new Rgb(r, g, b).ToUint());
                 }
             }
-            
-            // ZMIANA: Ta linia nie jest już potrzebna, bo 'aet' jest sortowane w miejscu
-            // aet = sortedAet; 
             
             y++;
 
