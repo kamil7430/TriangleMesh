@@ -100,4 +100,19 @@ public partial class MainWindowViewModel
 
     [ObservableProperty] 
     private int _reflectionFactor = MinReflectionFactor;
+
+    [ObservableProperty] 
+    private bool _isNormalVectorsMapChecked = false;
+    
+    private WriteableBitmap? _normalVectorsMap;
+    public WriteableBitmap NormalVectorsMap
+    {
+        get
+        {
+            if (_normalVectorsMap == null)
+                RestoreDefaultNormalVectorsMap();
+            return _normalVectorsMap!;
+        }
+        set => SetProperty(ref _normalVectorsMap, value);
+    }
 }

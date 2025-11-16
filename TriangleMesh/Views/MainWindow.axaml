@@ -269,6 +269,18 @@
                 <TextBlock
                     Text="{Binding ReflectionFactor, StringFormat='Wartość: {0}'}"
                     FontStyle="Italic"/>
+                
+                <Separator Margin="0, 5"/>
+                
+                <TextBlock FontWeight="Bold">
+                    Mapa wektorów normalnych:
+                </TextBlock>
+                <CheckBox IsChecked="{Binding IsNormalVectorsMapChecked}"
+                          Content="Używaj mapy wektorów normalnych"/>
+                <Button Content="Wybierz mapę..."
+                        Command="{Binding LoadNormalVectorsMapCommand}"/>
+                <Button Content="Przywróć domyślną mapę"
+                        Command="{Binding RestoreDefaultNormalVectorsMapCommand}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

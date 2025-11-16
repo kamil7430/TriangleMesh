@@ -26,12 +26,14 @@ public partial class MainWindowViewModel
         _wasDebugModeWarningMessageBoxShown = true;
     }
     
-    [RelayCommand]
-    private async Task LoadTexture()
+    private async Task<WriteableBitmap?> LoadBitmap()
     {
+        var defaultFolder = await _storageProvider.TryGetFolderFromPathAsync(AppContext.BaseDirectory);
+        
         var filePickerOpenOptions = new FilePickerOpenOptions
         {
             Title = "Wybierz plik obrazu",
+            SuggestedStartLocation = defaultFolder,
             AllowMultiple = false,
             FileTypeFilter = [FilePickerFileTypes.ImageAll]
         };
@@ -44,7 +46,7 @@ public partial class MainWindowViewModel
             try
             {
                 await using var stream = await file.OpenReadAsync();
-                ObjectTexture = WriteableBitmap.Decode(stream);
+                return WriteableBitmap.Decode(stream);
             }
             catch (Exception e)
             {
@@ -52,6 +54,24 @@ public partial class MainWindowViewModel
                     $"Podczas otwierania pliku wystąpił błąd:\n{e.Message}");
             }
         }
+
+        return null;
+    }
+
+    [RelayCommand]
+    private async Task LoadTexture()
+    {
+        var bitmap = await LoadBitmap();
+        if (bitmap != null)
+            ObjectTexture = bitmap;
+    }
+
+    [RelayCommand]
+    private async Task LoadNormalVectorsMap()
+    {
+        var bitmap = await LoadBitmap();
+        if (bitmap != null)
+            NormalVectorsMap = bitmap;
     }
 
     [RelayCommand]
@@ -60,5 +80,13 @@ public partial class MainWindowViewModel
         var uri = new Uri("avares://TriangleMesh/Assets/golden-retriever.jpg");
         using var stream = AssetLoader.Open(uri);
         ObjectTexture = WriteableBitmap.Decode(stream);
+    }
+    
+    [RelayCommand]
+    private void RestoreDefaultNormalVectorsMap()
+    {
+        var uri = new Uri("avares://TriangleMesh/Assets/normal_map.jpg");
+        using var stream = AssetLoader.Open(uri);
+        NormalVectorsMap = WriteableBitmap.Decode(stream);
     }
 }
