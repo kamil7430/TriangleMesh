@@ -18,4 +18,10 @@ public static class CoordsTranslator
 
     public static Vector CanvasToModel(this Vector v)
         => new Vector(v.X - DRAWING_AREA_WIDTH / 2, v.Y - DRAWING_AREA_HEIGHT / 2);
+
+    public static Vector3D ModelToCanvas(this Vector3D v)
+        => new Vector3D(v.X + DRAWING_AREA_WIDTH / 2, v.Y + DRAWING_AREA_HEIGHT / 2, v.Z);
+    
+    public static Vector3D CanvasToModel(this Vector3D v)
+        => new Vector3D(v.X - DRAWING_AREA_WIDTH / 2, v.Y - DRAWING_AREA_HEIGHT / 2, v.Z);
 }
