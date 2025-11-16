@@ -178,7 +178,7 @@
                         Kolor światła:
                     </TextBlock>
                     <avaloniaColorPicker:ColorButton Grid.Column="1"
-                                                     Color="{Binding LightColor}"/>
+                                                     Color="{Binding LightColor, Mode=TwoWay}"/>
                 </Grid>
                 
                 <Separator Margin="0, 5"/>
@@ -207,7 +207,7 @@
                         Kolor obiektu:
                     </TextBlock>
                     <avaloniaColorPicker:ColorButton Grid.Column="1"
-                                                     Color="{Binding ObjectColor}"/>
+                                                     Color="{Binding ObjectColor, Mode=TwoWay}"/>
                 </Grid>
                 <StackPanel IsVisible="{Binding ObjectTextureType,
                                  Converter={StaticResource EnumToBoolConverter},
