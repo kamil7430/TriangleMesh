@@ -66,10 +66,10 @@ public partial class MainWindowViewModel
     }
 
     [ObservableProperty] 
-    private double _distributedComponent;
+    private double _distributedComponent = 0.5;
     
     [ObservableProperty]
-    private double _specularComponent;
+    private double _specularComponent = 0.5;
 
     [ObservableProperty] 
     private Color _lightColor = Colors.White;
