@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using TriangleMesh.Models;
+using TriangleMesh.Models.Helpers;
 
 namespace TriangleMesh.Views.Helpers;
 
@@ -41,28 +41,32 @@ public class PolygonFiller
     private readonly Vector3D _l;
     private readonly Vector3D _v;
     private readonly int _m;
+    private readonly ILockedFramebuffer? _nVMSource;
 
-    private unsafe Rgb GetObjectColorInPoint(double u, double v)
+    private Rgb GetObjectColorInPoint(double u, double v)
     {
         if (_iOColor != null)
             return _iOColor.Value;
 
         if (_iOSource != null)
-        {
-            var ptr = (uint*)_iOSource.Address;
-            var size = _iOSource.Size;
-            
-            var x = (int)Math.Round(size.Width * u);
-            var y = (int)Math.Round(size.Height * v);
-
-            return Rgb.FromUint(*(ptr + y * _iOSource.RowBytes / 4 + x));
-        }
+            return GetPixelFromLockedFramebuffer(_iOSource, u, v);
 
         throw new InvalidOperationException("Both texture sources are null!");
     }
+    
+    private unsafe Rgb GetPixelFromLockedFramebuffer(ILockedFramebuffer lockedFramebuffer, double u, double v)
+    {
+        var ptr = (uint*)lockedFramebuffer.Address;
+        var size = lockedFramebuffer.Size;
+            
+        var x = (int)Math.Round(size.Width * u);
+        var y = (int)Math.Round(size.Height * v);
+
+        return Rgb.FromUint(*(ptr + y * lockedFramebuffer.RowBytes / sizeof(uint) + x));
+    }
 
     public PolygonFiller(double kD, double kS, Color iL, Color? iOColor, ILockedFramebuffer? iOSource, Vector3D l,
-        int m)
+        int m, ILockedFramebuffer? nVMSource)
     {
         _kD = kD;
         _kS = kS;
@@ -72,6 +76,7 @@ public class PolygonFiller
         _l = l;
         _v = new Vector3D(0, 0, 1);
         _m = m;
+        _nVMSource = nVMSource;
     }
 
     public IEnumerable<(PixelVector Vector, uint Color)> GetPixelsToPaint(Triangle t, double[,] zBuffer)
@@ -132,11 +137,22 @@ public class PolygonFiller
                     zBuffer[x, y] = z;
 
                     var N = Vector3D.Normalize(v1n * alpha + v2n * beta + v3n * gamma);
-                    var L = Vector3D.Normalize(_l - new Vector3D(p.X, p.Y, z));
-                    var R = CalculateR(N, L);
                     
                     var u = (t.V1.UFraction * alpha + t.V2.UFraction * beta + t.V3.UFraction * gamma).TruncateToZeroOne();
                     var v = (t.V1.VFraction * alpha + t.V2.VFraction * beta + t.V3.VFraction * gamma).TruncateToZeroOne();
+                    
+                    if (_nVMSource != null)
+                    {
+                        var Pu = Vector3D.Normalize(t.V1.PostRotationPu * alpha + t.V2.PostRotationPu * beta +
+                                                    t.V3.PostRotationPu * gamma);
+                        var Pv = Vector3D.Normalize(t.V1.PostRotationPv * alpha + t.V2.PostRotationPv * beta +
+                                                    t.V3.PostRotationPv * gamma);
+                        N = CalculateModifiedNormalVector(Pu, Pv, N, u, v);
+                    }
+                    
+                    var L = Vector3D.Normalize(_l - new Vector3D(p.X, p.Y, z));
+                    var R = CalculateR(N, L);
+                    
                     var iO = GetObjectColorInPoint(u, v);
                     
                     double r = 0, g = 0, b = 0;
@@ -218,4 +234,22 @@ public class PolygonFiller
 
     private double CalculateS(Vector v1, Vector v2, Vector v3)
         => (v2.X - v1.X) * (v3.Y - v1.Y) - (v3.X - v1.X) * (v2.Y - v1.Y);
+
+    private Vector3D CalculateModifiedNormalVector(Vector3D Pu, Vector3D Pv, Vector3D N, double u, double v)
+    {
+        var color = GetPixelFromLockedFramebuffer(_nVMSource!, u, v);
+        var N_texture = new Vector3D(
+            (color.R - 0.5) * 2.0,
+            (color.G - 0.5) * 2.0,
+            (color.B - 0.5) * 2.0
+        );
+        
+        var M = new Matrix(
+            Pu.X, Pv.X, N.X,
+            Pu.Y, Pv.Y, N.Y,
+            Pu.Z, Pv.Z, N.Z
+        );
+
+        return Vector3D.Normalize(M.MultiplicateBy(N_texture));
+    }
 }

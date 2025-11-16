@@ -69,18 +69,23 @@ public class MainWindowRenderer
             for (int j = 0; j < _zBuffer.GetLength(1); j++)
                 _zBuffer[i, j] = double.MinValue;
 
-        ILockedFramebuffer? lockedFramebuffer = null;
+        ILockedFramebuffer? iOSourceLockedFramebuffer = null;
         if (_viewModel.ObjectTextureType == ObjectTextureType.ExternalTexture)
-            lockedFramebuffer = _viewModel.ObjectTexture.Lock();
+            iOSourceLockedFramebuffer = _viewModel.ObjectTexture.Lock();
+
+        ILockedFramebuffer? nVMSourceLockedFramebuffer = null;
+        if (_viewModel.IsNormalVectorsMapChecked)
+            nVMSourceLockedFramebuffer = _viewModel.NormalVectorsMap.Lock();
         
         var filler = new PolygonFiller(
             _viewModel.DistributedComponent,
             _viewModel.SpecularComponent,
             _viewModel.LightColor,
             _viewModel.ObjectTextureType == ObjectTextureType.OneColor ? _viewModel.ObjectColor : null,
-            lockedFramebuffer,
+            iOSourceLockedFramebuffer,
             _viewModel.GetLightVector(),
-            _viewModel.ReflectionFactor
+            _viewModel.ReflectionFactor,
+            nVMSourceLockedFramebuffer
         );
         
         foreach (var triangle in _viewModel.GetTriangles())
@@ -89,7 +94,8 @@ public class MainWindowRenderer
                 *(ptr + p.Y * _width + p.X) = color;
         }
         
-        lockedFramebuffer?.Dispose();
+        iOSourceLockedFramebuffer?.Dispose();
+        nVMSourceLockedFramebuffer?.Dispose();
     }
 
     private unsafe void RenderTriangleMesh(uint* ptr)
