@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using System.Runtime.CompilerServices;
+using TriangleMesh.Models;
 using TriangleMesh.ViewModels;
 using TriangleMesh.Views.Helpers;
 
@@ -20,7 +21,7 @@ public class MainWindowRenderer
     private readonly uint _blankImageSize;
     private readonly byte[] _blankImage;
 
-    private double[,] _zBuffer;
+    private readonly double[,] _zBuffer;
 
     public MainWindowRenderer(WriteableBitmap buffer, MainWindowViewModel viewModel)
     {
@@ -63,17 +64,25 @@ public class MainWindowRenderer
 
     private unsafe void RenderFilledTriangles(uint* ptr)
     {
-        _zBuffer = new double[_width, _height];
+        for (int i = 0; i < _zBuffer.GetLength(0); i++)
+            for (int j = 0; j < _zBuffer.GetLength(1); j++)
+                _zBuffer[i, j] = double.MinValue;
 
         var filler = new PolygonFiller(
             _viewModel.DistributedComponent,
             _viewModel.SpecularComponent,
             _viewModel.LightColor,
-            
+            _viewModel.ObjectTextureType == ObjectTextureType.OneColor ? _viewModel.ObjectColor : null,
+            _viewModel.ObjectTextureType == ObjectTextureType.ExternalTexture ? _viewModel.ObjectTexture : null,
+            _viewModel.GetLightVector(),
+            _viewModel.ReflectionFactor
         );
+        
         foreach (var triangle in _viewModel.GetTriangles())
         {
-            
+            var pixels = filler.GetPixelsToPaint(triangle.GetEdges(), triangle, _zBuffer);
+            foreach (var (p, color) in pixels)
+                *(ptr + p.Y * _width + p.X) = color;
         }
     }
 

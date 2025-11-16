@@ -11,15 +11,28 @@ namespace TriangleMesh.Views.Helpers;
 
 public class PolygonFiller
 {
-    private class AetEntry(double yMax, double x, double delta)
+    private class AetEntry(double yStart, double yMax, double x, double delta)
     {
+        public double YStart { get; } = yStart;
         public double YMax { get; } = yMax;
         public double X { get; set; } = x;
         public double Delta { get; } = delta;
     }
 
-    private static readonly MyLinkedList<AetEntry>[] _et
-        = new MyLinkedList<AetEntry>[CoordsTranslator.DRAWING_AREA_HEIGHT];
+    private static MyLinkedList<AetEntry>[]? _et;
+    private static MyLinkedList<AetEntry>[] ET
+    {
+        get
+        {
+            if (_et == null)
+            {
+                _et = new MyLinkedList<AetEntry>[CoordsTranslator.DRAWING_AREA_HEIGHT];
+                for (int i = 0; i < _et.Length; i++)
+                    _et[i] = new MyLinkedList<AetEntry>();
+            }
+            return _et;
+        }
+    }
         
     private double _kD;
     private double _kS;
@@ -58,7 +71,7 @@ public class PolygonFiller
         FillET(edges);
         
         int y = 0;
-        while (y < CoordsTranslator.DRAWING_AREA_HEIGHT && _et[y].Count <= 0)
+        while (y < CoordsTranslator.DRAWING_AREA_HEIGHT && ET[y].Count <= 0)
             y++;
 
         var S_abc = CalculateS(t.V1.PostRotationP.ToVector(), t.V2.PostRotationP.ToVector(),
@@ -69,7 +82,7 @@ public class PolygonFiller
         while (aet.Count > 0 || y < CoordsTranslator.DRAWING_AREA_HEIGHT)
         {
             if (y < CoordsTranslator.DRAWING_AREA_HEIGHT)
-                aet.PushBack(_et[y]);
+                aet.PushBack(ET[y]);
             
             var sortedAet = aet.OrderBy(e => e.X).ToList();
 
@@ -80,7 +93,7 @@ public class PolygonFiller
             {
                 for (int x = (int)sortedAet[i].X; x <= sortedAet[i + 1].X; x++)
                 {
-                    var p = new Vector(x, y);
+                    var p = new Vector(x, y).CanvasToModel();
                     var S_pbc = CalculateS(p, t.V2.PostRotationP.ToVector(), t.V3.PostRotationP.ToVector());
                     var S_apc = CalculateS(t.V1.PostRotationP.ToVector(), p, t.V3.PostRotationP.ToVector());
                     var alpha = S_pbc / S_abc;
@@ -109,8 +122,8 @@ public class PolygonFiller
                     yield return (new PixelVector(x, y), new Rgb(r, g, b).ToUint());
                 }
             }
-
-            aet = new MyLinkedList<AetEntry>(sortedAet.Where(e => (int)e.YMax < y));
+            
+            aet = new MyLinkedList<AetEntry>(sortedAet.Where(e => (int)e.YMax > y + 1));
             
             y++;
 
@@ -135,7 +148,8 @@ public class PolygonFiller
             if (bCanvas.Y - aCanvas.Y < 1)
                 continue;
             
-            _et[(int)aCanvas.Y].PushBack(new AetEntry(
+            ET[(int)aCanvas.Y].PushBack(new AetEntry(
+                aCanvas.Y,
                 bCanvas.Y,
                 aCanvas.X,
                 (bCanvas.X - aCanvas.X) / (bCanvas.Y - aCanvas.Y)
@@ -146,15 +160,18 @@ public class PolygonFiller
     private double MyCos(Vector3D v1, Vector3D v2, int power)
     {
         var baseRes = v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
-        var result = baseRes;
         
+        if (baseRes <= 0)
+            return 0;
+        
+        var result = baseRes;
         while (power > 1)
         {
             result *= baseRes;
             power--;
         }
 
-        return result <= 0 ? 0 : result;
+        return result;
     }
 
     private Vector3D CalculateR(Vector3D n)
