@@ -10,6 +10,22 @@ namespace TriangleMesh.ViewModels;
 
 public partial class MainWindowViewModel
 {
+    private bool _wasDebugModeWarningMessageBoxShown = false;
+    
+    [RelayCommand]
+    private async Task ShowDebugModeWarningMessageBox()
+    {
+        if (_wasDebugModeWarningMessageBoxShown)
+            return;
+
+        await _messageBoxShower.ShowMessageBoxAsync("Ostrzeżenie o wydajności", 
+            "Uwaga, jeżeli ten program jest uruchomiony w trybie debugowania (za pośrednictem\n" +
+            "jakiegoś IDE), możesz doświadczyć niskiej wydajności renderowania wypełnionej siatki trójkątów.\n" +
+            "W takiej sytuacji zalecam zbudowanie programu za pomocą komendy \"dotnet run -c Release\"\n" +
+            "i uruchomienie wersji release, która powinna działać znacznie wydajniej.");
+        _wasDebugModeWarningMessageBoxShown = true;
+    }
+    
     [RelayCommand]
     private async Task LoadTexture()
     {

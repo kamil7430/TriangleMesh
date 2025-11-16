@@ -41,6 +41,7 @@
             <Label Classes="VerticalSeparator"/>
             
             <CheckBox IsChecked="{Binding IsFilledTrianglesChecked}"
+                      Command="{Binding ShowDebugModeWarningMessageBoxCommand}"
                       Content="Wypełnione trójkąty"/>
             <Label Classes="VerticalSeparator"/>
             
