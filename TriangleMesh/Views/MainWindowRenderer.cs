@@ -20,6 +20,8 @@ public class MainWindowRenderer
     private readonly uint _blankImageSize;
     private readonly byte[] _blankImage;
 
+    private double[,] _zBuffer;
+
     public MainWindowRenderer(WriteableBitmap buffer, MainWindowViewModel viewModel)
     {
         _buffer = buffer;
@@ -28,6 +30,7 @@ public class MainWindowRenderer
         _height = (uint)buffer.PixelSize.Height;
         _blankImageSize = _width * _height * sizeof(uint);
         _blankImage = new byte[_blankImageSize];
+        _zBuffer = new double[_width, _height];
     }
 
     public unsafe void Render()
@@ -60,7 +63,18 @@ public class MainWindowRenderer
 
     private unsafe void RenderFilledTriangles(uint* ptr)
     {
-        
+        _zBuffer = new double[_width, _height];
+
+        var filler = new PolygonFiller(
+            _viewModel.DistributedComponent,
+            _viewModel.SpecularComponent,
+            _viewModel.LightColor,
+            
+        );
+        foreach (var triangle in _viewModel.GetTriangles())
+        {
+            
+        }
     }
 
     private unsafe void RenderTriangleMesh(uint* ptr)
