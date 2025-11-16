@@ -80,8 +80,7 @@ public class MainWindowRenderer
         
         foreach (var triangle in _viewModel.GetTriangles())
         {
-            var pixels = filler.GetPixelsToPaint(triangle.GetEdges(), triangle, _zBuffer);
-            foreach (var (p, color) in pixels)
+            foreach (var (p, color) in filler.GetPixelsToPaint(triangle, _zBuffer))
                 *(ptr + p.Y * _width + p.X) = color;
         }
     }

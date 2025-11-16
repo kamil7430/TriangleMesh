@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Intrinsics;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -63,17 +64,23 @@ public class PolygonFiller
         _m = m;
     }
 
-    public IEnumerable<(PixelVector Vector, uint Color)> GetPixelsToPaint(IEnumerable<(Vertex, Vertex)> edges,
-        Triangle t, double[,] zBuffer)
+    public IEnumerable<(PixelVector Vector, uint Color)> GetPixelsToPaint(Triangle t, double[,] zBuffer)
     {
-        FillET(edges);
+        FillET(t.GetEdges());
+
+        var v1p = t.V1.PostRotationP;
+        var v2p = t.V2.PostRotationP;
+        var v3p = t.V3.PostRotationP;
+
+        var v1n = t.V1.PostRotationN;
+        var v2n = t.V2.PostRotationN;
+        var v3n = t.V3.PostRotationN;
         
         int y = 0;
         while (y < CoordsTranslator.DRAWING_AREA_HEIGHT && ET[y].Count <= 0)
             y++;
 
-        var S_abc = CalculateS(t.V1.PostRotationP.ToVector(), t.V2.PostRotationP.ToVector(),
-            t.V3.PostRotationP.ToVector());
+        var S_abc = CalculateS(v1p.ToVector(), v2p.ToVector(), v3p.ToVector());
         
         if (Math.Abs(S_abc) < 1e-6)
             yield break;
@@ -83,8 +90,7 @@ public class PolygonFiller
         while (y < CoordsTranslator.DRAWING_AREA_HEIGHT)
         {
             // 1. DODAJ nowe krawędzie
-            if (y < CoordsTranslator.DRAWING_AREA_HEIGHT)
-                aet.AddRange(ET[y]);
+            aet.AddRange(ET[y]);
             
             // 2. USUŃ stare krawędzie
             aet.RemoveAll(e => !(y < (int)Math.Round(e.YMax)));
@@ -108,20 +114,19 @@ public class PolygonFiller
                         continue;
                         
                     var p = new Vector(x, y).CanvasToModel();
-                    var S_pbc = CalculateS(p, t.V2.PostRotationP.ToVector(), t.V3.PostRotationP.ToVector());
-                    var S_apc = CalculateS(t.V1.PostRotationP.ToVector(), p, t.V3.PostRotationP.ToVector());
+                    var S_pbc = CalculateS(p, v2p.ToVector(), v3p.ToVector());
+                    var S_apc = CalculateS(v1p.ToVector(), p, v3p.ToVector());
                     var alpha = S_pbc / S_abc;
                     var beta = S_apc / S_abc;
                     var gamma = 1 - alpha - beta;
 
-                    var z = t.V1.PostRotationP.Z * alpha + t.V2.PostRotationP.Z * beta + t.V3.PostRotationP.Z * gamma;
+                    var z = v1p.Z * alpha + v2p.Z * beta + v3p.Z * gamma;
                     
                     if (z < zBuffer[x, y]) // Poprawiony test Z-bufora
                         continue;
                     zBuffer[x, y] = z;
 
-                    var N = Vector3D.Normalize(t.V1.PostRotationN * alpha + t.V2.PostRotationN * beta +
-                                               t.V3.PostRotationN * gamma);
+                    var N = Vector3D.Normalize(v1n * alpha + v2n * beta + v3n * gamma);
                     var L = Vector3D.Normalize(_l - new Vector3D(p.X, p.Y, z));
                     var R = CalculateR(N, L);
                     
@@ -130,10 +135,12 @@ public class PolygonFiller
                     var iO = GetObjectColorInPoint(u, v);
                     
                     double r = 0, g = 0, b = 0;
+                    var cosNL = MyCos(N, L, 1);
+                    var cosVR = MyCos(_v, R, _m);
                     
-                    r = _kD * _iL.R * iO.R * MyCos(N, L, 1) + _kS * _iL.R * iO.R * MyCos(_v, R, _m);
-                    g = _kD * _iL.G * iO.G * MyCos(N, L, 1) + _kS * _iL.G * iO.G * MyCos(_v, R, _m);
-                    b = _kD * _iL.B * iO.B * MyCos(N, L, 1) + _kS * _iL.B * iO.B * MyCos(_v, R, _m);
+                    r = _kD * _iL.R * iO.R * cosNL + _kS * _iL.R * iO.R * cosVR;
+                    g = _kD * _iL.G * iO.G * cosNL + _kS * _iL.G * iO.G * cosVR;
+                    b = _kD * _iL.B * iO.B * cosNL + _kS * _iL.B * iO.B * cosVR;
                     
                     yield return (new PixelVector(x, y), new Rgb(r, g, b).ToUint());
                 }
@@ -165,18 +172,24 @@ public class PolygonFiller
             
             int startY = (int)Math.Round(aCanvas.Y);
             int endY = (int)Math.Round(bCanvas.Y);
-
+            
             if (startY == endY)
                 continue;
             
-            if (startY < 0) startY = 0;
-            if (startY >= CoordsTranslator.DRAWING_AREA_HEIGHT) continue;
+            if (startY < 0) 
+                startY = 0;
+            if (startY >= CoordsTranslator.DRAWING_AREA_HEIGHT) 
+                continue;
+
+            double delta = 100;
+            if (bCanvas.Y - aCanvas.Y > 1)
+                delta = (bCanvas.X - aCanvas.X) / (bCanvas.Y - aCanvas.Y);
             
             ET[startY].Add(new AetEntry(
                 aCanvas.Y,
                 bCanvas.Y,
                 aCanvas.X,
-                (bCanvas.X - aCanvas.X) / (bCanvas.Y - aCanvas.Y)
+                delta
             ));
         }
     }
