@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using TriangleMesh.Models;
-using TriangleMesh.Models.Helpers;
 using TriangleMesh.Views.Helpers;
 
 namespace TriangleMesh.ViewModels;
@@ -29,5 +28,5 @@ public partial class MainWindowViewModel
             LightVectorVisualLength * Math.Sin(CurrentLightAngle),
             LightVectorVisualLength * Math.Cos(CurrentLightAngle),
             ZLightAnimationPosition
-        ).Rotate();
+        );
 }

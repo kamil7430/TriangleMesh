@@ -59,8 +59,8 @@ public class PolygonFiller
         var ptr = (uint*)lockedFramebuffer.Address;
         var size = lockedFramebuffer.Size;
             
-        var x = (int)Math.Round(size.Width * u);
-        var y = (int)Math.Round(size.Height * v);
+        var x = (int)Math.Round((size.Width - 1) * u);
+        var y = (int)Math.Round((size.Height - 1) * v);
 
         return Rgb.FromUint(*(ptr + y * lockedFramebuffer.RowBytes / sizeof(uint) + x));
     }
